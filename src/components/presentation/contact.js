@@ -2,40 +2,39 @@ import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 // import update from 'immutability-helper';
 import { fieldCd, skinCodes } from "../../constants/typeCodes";
-// import * as contactActions from '../../actions/contactActions';
+import * as contactActions from '../../actions/contactActions';
 // import { bindActionCreators } from 'redux';
 // import { withRouter } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import ResumePreview from "./resumePreview";
-// import { connect } from "react-redux";
+import { connect } from "react-redux";
 
 function Contact(props) {
     let history = useHistory();
     const [contact, setContact] = useState(props.contactSection);
-    //    useEffect(() => {
-    //        if(!props.document || !props.document.id || !props.document.skinCd)
-    //        {
-    //            history.push('/getting-started')
-    //        }
-    //    }, [])
+    useEffect(() => {
+        if (!props.document || !props.document.id || !props.document.skinCd) {
+            history.push('/getting-started')
+        }
+    }, [])
 
     const onchange = (event) => {
         var key = event.target.name;
         var val = event.target.value;
-        // this.setState({contactSection:update(this.state.contactSection,{$merge: {[key]:val}})});
+        // this.setState({ contactSection: update(this.state.contactSection, { $merge: { [key]: val } }) });
         setContact({ ...contact, [key]: val });
     };
     const onSubmit = async () => {
-        // if(props.contactSection!=null){
-        //     props.updateContact(props.document.id,contact);
-        // }
-        // else{
-        //     props.addContact(props.document.id,contact);
-        // }
+        if (props.contactSection != null) {
+            props.updateContact(contact);
+        }
+        else {
+            props.addContact(contact);
+        }
 
         history.push("/education");
     };
-
+    // Fill Data if person come to update the resume
     const getFieldData = (key) => {
         if (contact && contact[key]) {
             return contact[key];
@@ -226,4 +225,17 @@ function Contact(props) {
     );
 }
 
-export default Contact;
+const mapStateToProps = (state) => {
+    return {
+        contactSection: state.contactSection,
+        document: state.document
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        addContact: (contact) => dispatch(contactActions.add(contact)),
+        updateContact: (contact) => dispatch(contactActions).update(contact)
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Contact);

@@ -6,4 +6,4 @@ export const add = (educationSection) => {
 
 export const update = (educationSection) => {
     return { type: actionTypes.UPDATE_EDUCATION, educationSection: educationSection }
-},
+}

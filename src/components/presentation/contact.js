@@ -235,7 +235,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
     return {
         addContact: (contact) => dispatch(contactActions.add(contact)),
-        updateContact: (contact) => dispatch(contactActions).update(contact)
+        updateContact: (contact) => dispatch(contactActions.update(contact))
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Contact);

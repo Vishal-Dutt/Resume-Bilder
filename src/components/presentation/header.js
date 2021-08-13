@@ -1,7 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import logo from "../../static/images/logo.png";
-
+import { connect } from 'react-redux';
+import { isLoaded, isEmpty } from 'react-redux-firebase';
+import * as authActions from '../../actions/authActions'
 function LoggesOut(props) {
     return (
         <ul>
@@ -16,38 +18,40 @@ function LoggesOut(props) {
                 </NavLink>
             </li>
         </ul>
-    );
+    )
 }
 
 const Header = (props) => {
-    // const auth = props.auth;
+    const auth = props.auth;
     const handleLogOut = () => {
-        console.log("The user will sign out");
-    };
+        console.log('The user will sign out');
+        props.signOut();
+    }
 
     return (
         <header className="header">
             <nav className="nav">
                 <a href="/" className="holder-logo">
-                    <img className="logo" src={logo}></img>
+                    <img className='logo' src={logo}></img>
                 </a>
                 <div className="header-links full-height">
-                    {/* { isLoaded(auth) && !isEmpty(auth) ?<> */}
 
-                    <ul>
-                        <li className="signin ">
-                            <NavLink className="  " to="/">
-                                Logged in as
-                            </NavLink>
-                        </li>
-                        <li className="signin">
-                            <button className="text-blue btnv-3" onClick={handleLogOut}>
-                                Signout
-                            </button>
-                        </li>
-                    </ul>
+                    {isLoaded(auth) && !isEmpty(auth) ? <>
 
-                    {/* </>:<LoggesOut></LoggesOut>} */}
+                        <ul>
+                            <li className="signin ">
+                                <NavLink className="  " to="/">
+                                    Logged in as {auth.email}
+                                </NavLink>
+                            </li>
+                            <li className="signin">
+                                <button className="text-blue btnv-3" onClick={handleLogOut}>
+                                    Signout
+                                </button>
+                            </li>
+                        </ul>
+
+                    </> : <LoggesOut></LoggesOut>}
 
                     <ul id="nav-mid">
                         <li>
@@ -61,20 +65,21 @@ const Header = (props) => {
                             </NavLink>
                         </li>
                     </ul>
+
                 </div>
             </nav>
         </header>
     );
 };
 
-// const mapStateToProps=(state)=>{
-//   return{
-//      auth: state.firebase.auth
-//   }
-// }
-// const mapDispatchToProps= (dispatch)=>{
-//   return {
-//    signOut:()=>dispatch(authActions.signout())
-//   }
-// }
-export default Header;
+const mapStateToProps = (state) => {
+    return {
+        auth: state.firebase.auth
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signOut: () => dispatch(authActions.signout())
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

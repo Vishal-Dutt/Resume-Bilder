@@ -27,10 +27,12 @@ export const removeError = () => {
 }
 
 export const signIn = (userData) => {
-    return async (dispatch, { getFirebase, getFirestore }) => {
+    return async (dispatch, getState, obj) => {
+        console.log(obj);
+        const { getFirebase, getFirestore } = obj
         dispatch(signInRequest())
+        console.log(getFirebase);
         const firebase = getFirebase();
-        // instance of firebase
         try {
             let data = await firebase.auth().signInWithEmailAndPassword(userData.email, userData.password);
             dispatch(signInSuccess())
@@ -56,7 +58,7 @@ export const registerSuccess = () => {
     }
 }
 
-export const registerFailed = () => {
+export const registerFailed = (err) => {
     return {
         type: actionTypes.REGISTER_FAILED,
         error: err
@@ -64,7 +66,7 @@ export const registerFailed = () => {
 }
 
 export const register = (userData) => {
-    return (dispatch, { getFirebase, getFirestore }) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
         dispatch(registerRequest());
         const firebase = getFirebase();
         const firestore = getFirestore();
@@ -83,11 +85,11 @@ export const register = (userData) => {
     }
 }
 
-export function signOut() {
-    // thunk fucntion
-    return (dispatch, { getFirebase, getFirestore }) => {
+export function signout() {
+    // thunk function
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
         const firebase = getFirebase();
-        firebase.auth().signOut.then(() => {
+        firebase.auth().signOut().then(() => {
             dispatch({ type: actionTypes.SIGN_OUT })
         }).catch((err) => {
             dispatch({ type: actionTypes.SIGN_OUT_FAILED, error: err })
